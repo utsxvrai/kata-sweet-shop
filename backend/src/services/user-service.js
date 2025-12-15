@@ -10,10 +10,10 @@ const bcrypt = require("bcrypt");
 async function register(data){
     const userRepository = new UserRepository();
     try{
-        // const user = await userRepository.findByEmail(data.email);
-        // if(user){
-        //     throw new Error("User already exists");
-        // }
+        const user = await userRepository.findByEmail(data.email);
+        if(user){
+            throw new Error("User already exists");
+        }
         const hashedPassword = await bcrypt.hash(data.password, 10);
         data.password = hashedPassword;
         const newUser = await userRepository.create(data);
