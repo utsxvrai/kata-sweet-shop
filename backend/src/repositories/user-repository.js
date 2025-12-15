@@ -6,11 +6,11 @@ class UserRepository extends CrudRepository {
         super(prisma.user);
     }
 
-    findByEmail(email){
+    findByEmail(email) {
         return prisma.user.findUnique({
-            where : {email},
+            where: { email },
         });
     }
-} 
+}
 
 module.exports = UserRepository;

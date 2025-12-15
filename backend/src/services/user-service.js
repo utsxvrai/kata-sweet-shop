@@ -4,16 +4,16 @@ const { UserRepository } = require("../repositories");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-const userRepository = new UserRepository();
+
 
 
 async function register(data){
+    const userRepository = new UserRepository();
     try{
-        console.log("REGISTER DATA:", data, typeof data);
-        const user = await userRepository.findByEmail(data.email);
-        if(user){
-            throw new Error("User already exists");
-        }
+        // const user = await userRepository.findByEmail(data.email);
+        // if(user){
+        //     throw new Error("User already exists");
+        // }
         const hashedPassword = await bcrypt.hash(data.password, 10);
         data.password = hashedPassword;
         const newUser = await userRepository.create(data);
@@ -25,6 +25,7 @@ async function register(data){
 }
 
 async function signin(data){
+    const userRepository = new UserRepository();
     try{
         const user = await userRepository.findByEmail(data.email);
         if(!user){
