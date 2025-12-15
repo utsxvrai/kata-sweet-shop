@@ -35,7 +35,6 @@ async function signin(data){
         if(!isPasswordValid){
             throw new Error("Invalid password");
         }
-        console.log("Password is valid");
         const token = jwt.sign({id : user.id}, process.env.JWT_SECRET, {expiresIn : "1h"});
         return {user, token};
     }catch(error){
