@@ -3,3 +3,4 @@
 
 #environe_variables
 .env
+/src/generated/prisma
