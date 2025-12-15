@@ -29,10 +29,7 @@ app.use(
 /* ---------- ROUTES ---------- */
 app.use("/api", routes);
 
-/* ---------- HEALTH CHECK ---------- */
-app.get("/health", (req, res) => {
-  res.json({ status: "ok", message: "Backend is running" });
-});
+
 
 
 /* ---------- SERVER ---------- */
