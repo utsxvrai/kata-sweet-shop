@@ -1,29 +1,32 @@
-describe("UserService - register", () => {
+describe("UserService - signin", () => {
   beforeEach(() => {
-    jest.resetModules(); // 🔑 CRITICAL
+    jest.resetModules();
   });
 
-  it("should throw error if user already exists", async () => {
+  it("should throw error if password is invalid", async () => {
     jest.doMock("../../repositories", () => {
       return {
         UserRepository: jest.fn().mockImplementation(() => ({
           findByEmail: jest.fn().mockResolvedValue({
             id: 1,
             email: "test@example.com",
+            password: "", // fake hash
           }),
-          create: jest.fn(),
         })),
       };
     });
 
-    // ⬅️ Import AFTER mocking
-    const { register } = require("../user-service");
+    jest.doMock("bcrypt", () => ({
+      compare: jest.fn().mockResolvedValue(false),
+    }));
+
+    const { signin } = require("../user-service");
 
     await expect(
-      register({
+      signin({
         email: "test@example.com",
-        password: "123",
+        password: "wrong-password",
       })
-    ).rejects.toThrow("User already exists");
+    ).rejects.toThrow("Invalid password");
   });
 });
