@@ -14,12 +14,12 @@ async function register(data){
         if(user){
             throw new Error("User already exists");
         }
+
         const hashedPassword = await bcrypt.hash(data.password, 10);
         data.password = hashedPassword;
         const newUser = await userRepository.create(data);
         return newUser;
     }catch(error){
-        console.log("ERROR IN REGISTER:", error);
         throw error;
     }
 }
