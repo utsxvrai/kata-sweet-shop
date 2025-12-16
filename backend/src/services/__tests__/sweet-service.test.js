@@ -127,5 +127,17 @@ describe("SweetService", () => {
         const updated = await updateSweet(1, { price: 25 });
         expect(updated.price).toBe(25);
     });
-  });
+    it("should delete a sweet", async () => {
+        jest.doMock("../../repositories", () => ({
+            SweetRepository: jest.fn().mockImplementation(() => ({
+                delete: jest.fn().mockResolvedValue(true),
+            })),
+        }));
+
+        const { deleteSweet } = require("../sweet-service");
+
+        const result = await deleteSweet(1);
+        expect(result).toBe(true);
+    });
+    });
 });
