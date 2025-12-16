@@ -10,7 +10,7 @@ import api from './axios.config';
  */
 export const register = async (userData) => {
   try {
-    const response = await api.post('/auth/register', userData);
+    const response = await api.post('/user/register', userData);
     
     // Store token if registration is successful
     if (response.data.token) {
@@ -32,7 +32,7 @@ export const register = async (userData) => {
  */
 export const login = async (credentials) => {
   try {
-    const response = await api.post('/auth/login', credentials);
+    const response = await api.post('/user/signin', credentials);
     
     // Store token if login is successful
     if (response.data.token) {

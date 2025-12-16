@@ -7,7 +7,7 @@ import api from './axios.config';
 export const getAllSweets = async () => {
   try {
     const response = await api.get('/sweets');
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response?.data || { message: 'Failed to fetch sweets' };
   }
@@ -21,23 +21,21 @@ export const getAllSweets = async () => {
 export const getSweetById = async (sweetId) => {
   try {
     const response = await api.get(`/sweets/${sweetId}`);
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response?.data || { message: 'Failed to fetch sweet details' };
   }
 };
 
-/**
- * Search sweets by name
- * @param {string} searchTerm - Search term for sweet name
- * @returns {Promise<Array>} Array of matching sweet objects
- */
-export const searchSweets = async (searchTerm) => {
+export const searchSweets = async (filters = {}) => {
   try {
     const response = await api.get('/sweets/search', {
-      params: { name: searchTerm }
+      params: {
+        name: filters.name,
+        category: filters.category
+      }
     });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response?.data || { message: 'Failed to search sweets' };
   }
@@ -52,7 +50,7 @@ export const searchSweets = async (searchTerm) => {
 export const purchaseSweet = async (sweetId, quantity = 1) => {
   try {
     const response = await api.post(`/sweets/${sweetId}/purchase`, { quantity });
-    return response.data;
+    return response.data.data;
   } catch (error) {
     throw error.response?.data || { message: 'Failed to purchase sweet' };
   }
@@ -69,6 +67,21 @@ export const addSweet = async (sweetData) => {
     return response.data;
   } catch (error) {
     throw error.response?.data || { message: 'Failed to add sweet' };
+  }
+};
+
+/**
+ * Update a sweet (Admin only)
+ * @param {string} sweetId - The ID of the sweet
+ * @param {Object} sweetData - Data to update (price, quantity, etc.)
+ * @returns {Promise<Object>} Updated sweet object
+ */
+export const updateSweet = async (sweetId, sweetData) => {
+  try {
+    const response = await api.put(`/sweets/${sweetId}`, sweetData);
+    return response.data.data;
+  } catch (error) {
+    throw error.response?.data || { message: 'Failed to update sweet' };
   }
 };
 

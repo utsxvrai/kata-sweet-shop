@@ -1,6 +1,49 @@
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useAuth } from './context/AuthContext';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Home from './pages/Home';
+
 function App() {
   return (
-    <div className="min-h-screen flex flex-col bg-cream">
+    <Router>
+      <div className="min-h-screen flex flex-col bg-cream">
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          
+          {/* Protected Routes with Layout */}
+          <Route path="/" element={<ProtectedLayout />}>
+            <Route index element={<Home />} />
+          </Route>
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+// Protected Layout Component
+function ProtectedLayout() {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-cream">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-maroon mx-auto"></div>
+          <p className="mt-4 text-maroon">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated()) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return (
+    <>
       {/* Navbar */}
       <nav className="bg-maroon text-cream shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -10,9 +53,8 @@ function App() {
                 <span className="text-gold">Kata</span> Sweet Shop
               </h1>
             </div>
-            {/* Optional: Add navigation links here later */}
             <div className="hidden md:flex space-x-8">
-              {/* Navigation items will go here */}
+              <LogoutButton />
             </div>
           </div>
         </div>
@@ -21,15 +63,7 @@ function App() {
       {/* Main Content Area */}
       <main className="flex-grow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          {/* Content will be added here */}
-          <div className="text-center py-20">
-            <h2 className="text-4xl font-bold text-maroon mb-4">
-              Welcome to Kata Sweet Shop
-            </h2>
-            <p className="text-lg text-gray-700 max-w-2xl mx-auto">
-              Experience the authentic taste of traditional Indian sweets, crafted with love and the finest ingredients.
-            </p>
-          </div>
+          <Home />
         </div>
       </main>
 
@@ -41,9 +75,27 @@ function App() {
           </p>
         </div>
       </footer>
-    </div>
-  )
+    </>
+  );
 }
 
-export default App
+// Logout Button Component
+function LogoutButton() {
+  const { logout } = useAuth();
+  
+  const handleLogout = () => {
+    logout();
+  };
+
+  return (
+    <button
+      onClick={handleLogout}
+      className="bg-gold hover:bg-saffron text-white font-medium py-2 px-4 rounded-lg transition-colors"
+    >
+      Logout
+    </button>
+  );
+}
+
+export default App;
 
