@@ -4,7 +4,6 @@ const sweetRepository = new SweetRepository();
 
 async function purchaseSweet(id, quantity){
     const sweet = await sweetRepository.findById(id);
-    console.log(sweet);
     if(!sweet){
         throw new Error("Sweet not found");
     }
