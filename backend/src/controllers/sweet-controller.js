@@ -1,9 +1,6 @@
 const { SweetService } = require("../services");
 
-/**
- * Add a new sweet to the inventory
- * POST /api/v1/sweets
- */
+
 async function addSweet(req, res) {
     try {
         const { name, category, price, quantity } = req.body;
@@ -45,10 +42,6 @@ async function addSweet(req, res) {
     }
 }
 
-/**
- * Get all sweets
- * GET /api/v1/sweets
- */
 async function listSweets(req, res) {
     try {
         const sweets = await SweetService.listSweets();
@@ -69,10 +62,6 @@ async function listSweets(req, res) {
     }
 }
 
-/**
- * Search sweets with filters
- * GET /api/v1/sweets/search?name=&category=&minPrice=&maxPrice=
- */
 async function searchSweets(req, res) {
     try {
         const { name, category, minPrice, maxPrice } = req.query;
@@ -102,10 +91,6 @@ async function searchSweets(req, res) {
     }
 }
 
-/**
- * Update sweet details
- * PUT /api/v1/sweets/:id
- */
 async function updateSweet(req, res) {
     try {
         const { id } = req.params;
@@ -148,10 +133,7 @@ async function updateSweet(req, res) {
     }
 }
 
-/**
- * Delete a sweet
- * DELETE /api/v1/sweets/:id
- */
+
 async function deleteSweet(req, res) {
     try {
         const { id } = req.params;
@@ -179,10 +161,7 @@ async function deleteSweet(req, res) {
     }
 }
 
-/**
- * Restock a sweet (add quantity)
- * POST /api/v1/sweets/:id/restock
- */
+
 async function restockSweet(req, res) {
     try {
         const { id } = req.params;
@@ -227,10 +206,7 @@ async function restockSweet(req, res) {
     }
 }
 
-/**
- * Purchase a sweet (reduce quantity)
- * POST /api/v1/sweets/:id/purchase
- */
+
 async function purchaseSweet(req, res) {
     try {
         const { id } = req.params;
