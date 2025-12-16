@@ -24,6 +24,16 @@ async function listSweets(){
     }
 }
 
+async function searchSweets(filters){
+    try{
+        const sweets = await sweetRepository.search(filters);
+        return sweets;
+    }
+    catch(error){
+        throw error;
+    }
+}
+
 async function purchaseSweet(id, quantity){
     const sweet = await sweetRepository.findById(id);
     if(!sweet){
@@ -39,6 +49,7 @@ async function purchaseSweet(id, quantity){
 module.exports = {
   purchaseSweet,
   addSweet,
-  listSweets
+  listSweets,
+  searchSweets
 };
 
