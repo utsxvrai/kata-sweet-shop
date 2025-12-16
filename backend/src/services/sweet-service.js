@@ -1,4 +1,5 @@
 const { SweetRepository } = require("../repositories");
+const redis = require("../config/redis-config");
 
 const sweetRepository = new SweetRepository();
 
@@ -7,6 +8,7 @@ const sweetRepository = new SweetRepository();
 async function addSweet(data){
     try{
         const sweet = await sweetRepository.create(data);
+        await redis.del('sweets:all'); // Invalidate cache
         return sweet;
     }
     catch(error){
@@ -16,7 +18,17 @@ async function addSweet(data){
 
 async function listSweets(){
     try{
+        // Check cache first
+        const cachedSweets = await redis.get('sweets:all');
+        if (cachedSweets) {
+            console.log('Cache Hit');
+            return cachedSweets;
+        }
+
         const sweets = await sweetRepository.findAll();
+        // Cache for 1 hour
+        await redis.set('sweets:all', JSON.stringify(sweets), { ex: 3600 });
+        console.log('Cache Miss');
         return sweets;
     }
     catch(error){
@@ -37,6 +49,7 @@ async function searchSweets(filters){
 async function updateSweet(id, data){
     try{
         const sweet = await sweetRepository.update(id, data);
+        await redis.del('sweets:all'); // Invalidate cache
         return sweet;
     }
     catch(error){
@@ -47,6 +60,7 @@ async function updateSweet(id, data){
 async function deleteSweet(id){
     try{
         const sweet = await sweetRepository.delete(id);
+        await redis.del('sweets:all'); // Invalidate cache
         return sweet;
     }
     catch(error){
@@ -62,6 +76,7 @@ async function restockSweet(id, quantity){
         }
         sweet.quantity += quantity;
         await sweetRepository.update(id, sweet);
+        await redis.del('sweets:all'); // Invalidate cache
         return sweet;
     }
     catch(error){
@@ -86,6 +101,7 @@ async function purchaseSweet(id, quantity) {
   };
 
   await sweetRepository.update(id, updatedSweet);
+  await redis.del('sweets:all'); // Invalidate cache
   return updatedSweet;
 }
 
