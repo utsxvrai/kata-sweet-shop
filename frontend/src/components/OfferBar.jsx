@@ -17,19 +17,20 @@ function OfferBar() {
     }, []);
 
     return (
-        <div className="bg-gradient-to-r from-red-900 via-maroon to-red-900 text-gold shadow-lg relative z-20 border-b border-gold/30">
+        <div className=" from-red-900 via-maroon to-red-900 text-gold ">
             <div className="max-w-7xl mx-auto px-4 h-10 flex items-center justify-center relative overflow-hidden">
                 {offers.map((offer, index) => (
                     <div
                         key={index}
-                        className={`absolute w-full text-center transition-all duration-700 transform ${index === currentIndex
-                                ? 'opacity-100 translate-y-0'
+                        className={`absolute w-full text-center transition-all duration-700 transform ${
+                            index === currentIndex 
+                                ? 'opacity-100 translate-y-0' 
                                 : 'opacity-0 translate-y-4'
-                            }`}
+                        }`}
                     >
                         <span className="font-medium tracking-wide flex items-center justify-center gap-2">
-                            <span className="text-xl">✨</span>
-                            {offer}
+                            <span className="text-xl">✨</span> 
+                            {offer} 
                             <span className="text-xl">✨</span>
                         </span>
                     </div>
