@@ -1,75 +1,46 @@
 function App() {
   return (
-    <div className="min-h-screen bg-cream">
-      {/* Header */}
-      <header className="bg-maroon text-cream py-6 shadow-lg">
-        <div className="max-w-4xl mx-auto px-4">
-          <h1 className="text-4xl font-bold text-center">
-            Welcome to Sweet Shop
-          </h1>
-          <p className="text-center mt-2 text-cream/90">
-            Traditional flavors, modern design
-          </p>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-4xl mx-auto px-4 py-12">
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Card 1 */}
-          <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-saffron">
-            <h2 className="text-2xl font-bold text-maroon mb-3">
-              Saffron Delights
-            </h2>
-            <p className="text-gray-700 mb-4">
-              Experience the rich, warm flavors of traditional Indian sweets.
-            </p>
-            <button className="bg-saffron hover:bg-saffron/90 text-white font-semibold py-2 px-6 rounded-lg transition-colors">
-              Explore
-            </button>
-          </div>
-
-          {/* Card 2 */}
-          <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-gold">
-            <h2 className="text-2xl font-bold text-maroon mb-3">
-              Golden Specials
-            </h2>
-            <p className="text-gray-700 mb-4">
-              Handcrafted with love, inspired by centuries of tradition.
-            </p>
-            <button className="bg-gold hover:bg-gold/90 text-white font-semibold py-2 px-6 rounded-lg transition-colors">
-              Discover
-            </button>
-          </div>
-        </div>
-
-        {/* Footer Section */}
-        <div className="mt-12 text-center">
-          <div className="inline-block bg-maroon/10 p-8 rounded-xl">
-            <h3 className="text-2xl font-bold text-maroon mb-2">
-              Color Palette
-            </h3>
-            <div className="flex gap-4 mt-4 justify-center">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-cream border-2 border-gray-300 rounded-lg shadow"></div>
-                <p className="text-sm mt-2 font-medium">Cream</p>
-              </div>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-saffron rounded-lg shadow"></div>
-                <p className="text-sm mt-2 font-medium">Saffron</p>
-              </div>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-maroon rounded-lg shadow"></div>
-                <p className="text-sm mt-2 font-medium">Maroon</p>
-              </div>
-              <div className="text-center">
-                <div className="w-16 h-16 bg-gold rounded-lg shadow"></div>
-                <p className="text-sm mt-2 font-medium">Gold</p>
-              </div>
+    <div className="min-h-screen flex flex-col bg-cream">
+      {/* Navbar */}
+      <nav className="bg-maroon text-cream shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center">
+              <h1 className="text-2xl font-bold">
+                <span className="text-gold">Kata</span> Sweet Shop
+              </h1>
+            </div>
+            {/* Optional: Add navigation links here later */}
+            <div className="hidden md:flex space-x-8">
+              {/* Navigation items will go here */}
             </div>
           </div>
         </div>
+      </nav>
+
+      {/* Main Content Area */}
+      <main className="flex-grow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          {/* Content will be added here */}
+          <div className="text-center py-20">
+            <h2 className="text-4xl font-bold text-maroon mb-4">
+              Welcome to Kata Sweet Shop
+            </h2>
+            <p className="text-lg text-gray-700 max-w-2xl mx-auto">
+              Experience the authentic taste of traditional Indian sweets, crafted with love and the finest ingredients.
+            </p>
+          </div>
+        </div>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-maroon text-cream py-6 mt-auto">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-cream/90">
+            Authentic Indian Sweets Since 1995
+          </p>
+        </div>
+      </footer>
     </div>
   )
 }
