@@ -2,7 +2,7 @@ const dotenv = require("dotenv");
 dotenv.config(); 
 
 const { PrismaPg } = require("@prisma/adapter-pg");
-const { PrismaClient } = require("../generated/prisma/client");
+const { PrismaClient } = require("../generated/prisma");
 const { Pool } = require("pg")
 
 
