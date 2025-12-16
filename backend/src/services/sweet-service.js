@@ -54,6 +54,21 @@ async function deleteSweet(id){
     }
 }
 
+async function restockSweet(id, quantity){
+    try{
+        const sweet = await sweetRepository.findById(id);
+        if(!sweet){
+            throw new Error("Sweet not found");
+        }
+        sweet.quantity += quantity;
+        await sweetRepository.update(id, sweet);
+        return sweet;
+    }
+    catch(error){
+        throw error;
+    }
+}
+
 async function purchaseSweet(id, quantity){
     const sweet = await sweetRepository.findById(id);
     if(!sweet){
@@ -72,6 +87,7 @@ module.exports = {
   listSweets,
   searchSweets,
   updateSweet,
-  deleteSweet
+  deleteSweet,
+  restockSweet
 };
 
