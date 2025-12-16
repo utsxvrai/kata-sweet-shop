@@ -102,5 +102,18 @@ describe("SweetService", () => {
         quantity: 7,
       }));
     });
+    
+    it("should search sweets by name", async () => {
+        jest.doMock("../../repositories", () => ({
+            SweetRepository: jest.fn().mockImplementation(() => ({
+                search: jest.fn().mockResolvedValue([{ name: "Gulab Jamun" }]),
+            })),
+        }));
+
+        const { searchSweets } = require("../sweet-service");
+
+        const result = await searchSweets({ name: "Gulab" });
+        expect(result[0].name).toContain("Gulab");
+    });
   });
 });
