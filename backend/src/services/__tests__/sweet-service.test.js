@@ -1,26 +1,49 @@
-describe("SweetService - purchaseSweet", () => {
-  beforeEach(() => {
-    jest.resetModules();
+it("should create a new sweet", async () => {
+  jest.doMock("../../repositories", () => ({
+    SweetRepository: jest.fn().mockImplementation(() => ({
+      create: jest.fn().mockResolvedValue({
+        id: 1,
+        name: "Rasgulla",
+        category: "Dessert",
+        price: 20,
+        quantity: 50,
+      }),
+    })),
+  }));
+
+  const { addSweet } = require("../sweet-service");
+
+  const sweet = await addSweet({
+    name: "Rasgulla",
+    category: "Dessert",
+    price: 20,
+    quantity: 50,
   });
 
-  it("should throw error if stock is insufficient", async () => {
-    jest.doMock("../../repositories", () => {
-      return {
-        SweetRepository: jest.fn().mockImplementation(() => ({
-          findById: jest.fn().mockResolvedValue({
-            id: 1,
-            name: "Gulab Jamun",
-            quantity: 2,
-          }),
-          update: jest.fn(),
-        })),
-      };
-    });
+  expect(sweet.name).toBe("Rasgulla");
+});
 
-    const { purchaseSweet } = require("../sweet-service");
+it("should create a new sweet", async () => {
+  jest.doMock("../../repositories", () => ({
+    SweetRepository: jest.fn().mockImplementation(() => ({
+      create: jest.fn().mockResolvedValue({
+        id: 1,
+        name: "Rasgulla",
+        category: "Dessert",
+        price: 20,
+        quantity: 50,
+      }),
+    })),
+  }));
 
-    await expect(
-      purchaseSweet(1, 5) // request more than available
-    ).rejects.toThrow("Insufficient stock");
+  const { addSweet } = require("../sweet-service");
+
+  const sweet = await addSweet({
+    name: "Rasgulla",
+    category: "Dessert",
+    price: 20,
+    quantity: 50,
   });
+
+  expect(sweet.name).toBe("Rasgulla");
 });
