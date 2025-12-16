@@ -115,5 +115,17 @@ describe("SweetService", () => {
         const result = await searchSweets({ name: "Gulab" });
         expect(result[0].name).toContain("Gulab");
     });
+    it("should update sweet details", async () => {
+        jest.doMock("../../repositories", () => ({
+            SweetRepository: jest.fn().mockImplementation(() => ({
+                update: jest.fn().mockResolvedValue({ price: 25 }),
+            })),
+        }));
+
+        const { updateSweet } = require("../sweet-service");
+
+        const updated = await updateSweet(1, { price: 25 });
+        expect(updated.price).toBe(25);
+    });
   });
 });
