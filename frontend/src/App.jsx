@@ -3,6 +3,7 @@ import { useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Home from './pages/Home';
+import Navbar from './components/Navbar';
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
           {/* Public Routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          
+
           {/* Protected Routes with Layout */}
           <Route path="/" element={<ProtectedLayout />}>
             <Route index element={<Home />} />
@@ -45,20 +46,7 @@ function ProtectedLayout() {
   return (
     <>
       {/* Navbar */}
-      <nav className="bg-maroon text-cream shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold">
-                <span className="text-gold">Kata</span> Sweet Shop
-              </h1>
-            </div>
-            <div className="hidden md:flex space-x-8">
-              <LogoutButton />
-            </div>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Main Content Area */}
       <main className="flex-grow">
@@ -79,23 +67,7 @@ function ProtectedLayout() {
   );
 }
 
-// Logout Button Component
-function LogoutButton() {
-  const { logout } = useAuth();
-  
-  const handleLogout = () => {
-    logout();
-  };
 
-  return (
-    <button
-      onClick={handleLogout}
-      className="bg-gold hover:bg-saffron text-white font-medium py-2 px-4 rounded-lg transition-colors"
-    >
-      Logout
-    </button>
-  );
-}
 
 export default App;
 
