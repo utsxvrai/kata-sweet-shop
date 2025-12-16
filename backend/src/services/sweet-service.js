@@ -44,6 +44,16 @@ async function updateSweet(id, data){
     }
 }
 
+async function deleteSweet(id){
+    try{
+        const sweet = await sweetRepository.delete(id);
+        return sweet;
+    }
+    catch(error){
+        throw error;
+    }
+}
+
 async function purchaseSweet(id, quantity){
     const sweet = await sweetRepository.findById(id);
     if(!sweet){
@@ -61,6 +71,7 @@ module.exports = {
   addSweet,
   listSweets,
   searchSweets,
-  updateSweet
+  updateSweet,
+  deleteSweet
 };
 
