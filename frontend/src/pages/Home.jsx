@@ -1,18 +1,21 @@
 import { useState, useEffect } from 'react';
-import { getAllSweets, searchSweets, addSweet, updateSweet, deleteSweet } from '../api/sweets.api';
+import { getAllSweets, searchSweets, addSweet, updateSweet, deleteSweet, purchaseSweet } from '../api/sweets.api';
 import { useAuth } from '../context/AuthContext';
 import SweetModal from '../components/SweetModal';
 import OfferBar from '../components/OfferBar';
+import PurchaseModal from '../components/PurchaseModal';
 
 function Home() {
     const [sweets, setSweets] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const { user } = useAuth();
-    
+
     // Admin Modal State
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingSweet, setEditingSweet] = useState(null);
+    const [purchaseSweetItem, setPurchaseSweetItem] = useState(null);
+    const [isPurchaseModalOpen, setIsPurchaseModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [category, setCategory] = useState('');
 
@@ -26,8 +29,8 @@ function Home() {
         return () => clearTimeout(timer);
     }, [searchTerm, category]);
 
-    const fetchSweets = async () => {
-        setLoading(true);
+    const fetchSweets = async (silent = false) => {
+        if (!silent) setLoading(true);
         try {
             let data;
             if (searchTerm || category) {
@@ -40,7 +43,7 @@ function Home() {
             setError('Failed to load sweets. Please try again later.');
             console.error(err);
         } finally {
-            setLoading(false);
+            if (!silent) setLoading(false);
         }
     };
 
@@ -64,67 +67,81 @@ function Home() {
                 console.error(err);
             }
         }
-    };
+    }
 
-    const handleModalSubmit = async (formData) => {
-        try {
-            if (editingSweet) {
-                await updateSweet(editingSweet.id, formData);
-            } else {
-                await addSweet(formData);
-            }
-            setIsModalOpen(false);
-            fetchSweets(); // Refresh list
-        } catch (err) {
-            alert(err.message || 'Operation failed');
+    const handlePurchaseClick = (sweet) => {
+        if (!user) {
+            alert('Please login to purchase sweets');
+            return;
         }
+        setPurchaseSweetItem(sweet);
+        setIsPurchaseModalOpen(true);
     };
 
-    if (loading) {
-        return (
-            <div className="flex justify-center items-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-maroon"></div>
-            </div>
-        );
-    }
+    const handlePurchaseComplete = async (sweetId, quantity) => {
+        await purchaseSweet(sweetId, quantity);
+        fetchSweets(true); // Silent refresh to keep modal open
+    };
 
-    if (error) {
-        return (
-            <div className="text-center py-10">
-                <p className="text-red-600 text-lg">{error}</p>
-                <button
-                    onClick={fetchSweets}
-                    className="mt-4 px-4 py-2 bg-maroon text-white rounded hover:bg-maroon/90"
-                >
-                    Retry
-                </button>
-            </div>
-        );
+const handleModalSubmit = async (formData) => {
+    try {
+        if (editingSweet) {
+            await updateSweet(editingSweet.id, formData);
+        } else {
+            await addSweet(formData);
+        }
+        setIsModalOpen(false);
+        fetchSweets(); // Refresh list
+    } catch (err) {
+        alert(err.message || 'Operation failed');
     }
+};
 
+if (loading) {
     return (
-        <div className="relative min-h-screen">
-            {/* Background Mandala Animation */}
-            <div className="mandala-bg"></div>
+        <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-maroon"></div>
+        </div>
+    );
+}
 
-            <OfferBar />
+if (error) {
+    return (
+        <div className="text-center py-10">
+            <p className="text-red-600 text-lg">{error}</p>
+            <button
+                onClick={fetchSweets}
+                className="mt-4 px-4 py-2 bg-maroon text-white rounded hover:bg-maroon/90"
+            >
+                Retry
+            </button>
+        </div>
+    );
+}
 
-            <div className="relative z-10 px-4 py-8 max-w-7xl mx-auto">
-                {/* Dashboard Header */}
-                <div className="mb-12 text-center">
-                    <h1 className="text-4xl md:text-5xl font-bold text-maroon mb-4 font-serif">
-                        Our <span className="text-gold">Hertiage</span> Collection
-                    </h1>
-                    <p className="text-gray-600 max-w-2xl mx-auto text-lg italic">
-                        "Experience the royal taste of authentic Indian craftsmanship, perfected since 1995"
-                    </p>
-                    <div className="w-24 h-1 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mt-6"></div>
-                </div>
+return (
+    <div className="relative min-h-screen">
+        {/* Background Mandala Animation */}
+        <div className="mandala-bg"></div>
 
-                {/* Search and Filter Section */}
-                <div className="max-w-4xl mx-auto mb-12">
-                    <div className="flex flex-col md:flex-row gap-4 p-6 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-gold/20 items-center transform transition-all hover:scale-[1.01]">
-                        {/* Search Input */}
+        <OfferBar />
+
+        <div className="relative z-10 px-4 py-8 max-w-7xl mx-auto">
+            {/* Dashboard Header */}
+            <div className="mb-12 text-center">
+                <h1 className="text-4xl md:text-5xl font-bold text-maroon mb-4 font-serif">
+                    Our <span className="text-gold">Hertiage</span> Collection
+                </h1>
+                <p className="text-gray-600 max-w-2xl mx-auto text-lg italic">
+                    "Experience the royal taste of authentic Indian craftsmanship, perfected since 1995"
+                </p>
+                <div className="w-24 h-1 bg-gradient-to-r from-transparent via-gold to-transparent mx-auto mt-6"></div>
+            </div>
+
+            {/* Search and Filter Section */}
+            <div className="max-w-4xl mx-auto mb-12">
+                <div className="flex flex-col md:flex-row gap-4 p-6 bg-white/90 backdrop-blur-sm rounded-xl shadow-lg border border-gold/20 items-center transform transition-all hover:scale-[1.01]">
+                    {/* Search Input */}
                     <div className="flex-1 relative w-full">
                         <input
                             type="text"
@@ -197,16 +214,16 @@ function Home() {
                                     </span>
                                 </div>
 
-                                
+
                                 {user?.role === 'ADMIN' ? (
                                     <div className="flex gap-2">
-                                        <button 
+                                        <button
                                             onClick={() => handleEdit(sweet)}
                                             className="px-3 py-1 bg-blue-50 text-blue-600 border border-blue-200 rounded hover:bg-blue-100 text-xs font-medium"
                                         >
                                             Edit
                                         </button>
-                                        <button 
+                                        <button
                                             onClick={() => handleDelete(sweet.id)}
                                             className="px-3 py-1 bg-red-50 text-red-600 border border-red-200 rounded hover:bg-red-100 text-xs font-medium"
                                         >
@@ -214,11 +231,24 @@ function Home() {
                                         </button>
                                     </div>
                                 ) : (
-                                    <button 
-                                        className="px-4 py-2 bg-cream text-maroon border border-maroon rounded hover:bg-maroon hover:text-white transition-colors text-sm font-medium"
-                                    >
-                                        View Details
-                                    </button>
+                                    <div className="flex gap-2 w-full">
+                                        <button
+                                            onClick={() => handlePurchaseClick(sweet)}
+                                            disabled={sweet.quantity <= 0}
+                                            className={`flex-1 px-4 py-2 rounded text-sm font-medium transition-colors ${
+                                                sweet.quantity > 0
+                                                ? 'bg-maroon text-white hover:bg-maroon/90 shadow-sm'
+                                                : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                                            }`}
+                                        >
+                                            {sweet.quantity > 0 ? 'Buy Now' : 'Out of Stock'}
+                                        </button>
+                                        <button
+                                            className="px-3 py-2 bg-cream text-maroon border border-maroon rounded hover:bg-maroon hover:text-white transition-colors text-sm font-medium"
+                                        >
+                                            View
+                                        </button>
+                                    </div>
                                 )}
                             </div>
                         </div>
@@ -231,18 +261,26 @@ function Home() {
                     <p className="text-gray-500 text-lg">No sweets found in the inventory.</p>
                 </div>
             )}
-            </div>
+        </div>
 
-            {/* Admin Modal */}
-            <SweetModal 
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                onSubmit={handleModalSubmit}
-                initialData={editingSweet}
+        {/* Admin Modal */}
+        <SweetModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onSubmit={handleModalSubmit}
+            initialData={editingSweet}
                 isEditing={!!editingSweet}
             />
-        </div>
-    );
+
+            {/* Purchase Modal */}
+            <PurchaseModal
+                isOpen={isPurchaseModalOpen}
+                onClose={() => setIsPurchaseModalOpen(false)}
+                sweet={purchaseSweetItem}
+                onPurchase={handlePurchaseComplete}
+            />
+    </div>
+);
 }
 
 export default Home;
