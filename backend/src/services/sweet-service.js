@@ -2,6 +2,18 @@ const { SweetRepository } = require("../repositories");
 
 const sweetRepository = new SweetRepository();
 
+
+
+async function addSweet(data){
+    try{
+        const sweet = await sweetRepository.create(data);
+        return sweet;
+    }
+    catch(error){
+        throw error;
+    }
+}
+
 async function purchaseSweet(id, quantity){
     const sweet = await sweetRepository.findById(id);
     if(!sweet){
@@ -16,5 +28,6 @@ async function purchaseSweet(id, quantity){
 
 module.exports = {
   purchaseSweet,
+  addSweet
 };
 
