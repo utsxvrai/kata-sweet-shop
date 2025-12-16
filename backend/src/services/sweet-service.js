@@ -68,17 +68,25 @@ async function restockSweet(id, quantity){
         throw error;
     }
 }
+async function purchaseSweet(id, quantity) {
+  const sweetRepository = new SweetRepository();
 
-async function purchaseSweet(id, quantity){
-    const sweet = await sweetRepository.findById(id);
-    if(!sweet){
-        throw new Error("Sweet not found");
-    }
-    if(sweet.quantity < quantity){
-        throw new Error("Insufficient stock");
-    }
-    sweet.quantity -= quantity;
-    await sweetRepository.update(id, sweet);
+  const sweet = await sweetRepository.findById(id);
+  if (!sweet) {
+    throw new Error("Sweet not found");
+  }
+
+  if (sweet.quantity < quantity) {
+    throw new Error("Insufficient stock");
+  }
+
+  const updatedSweet = {
+    ...sweet,
+    quantity: sweet.quantity - quantity,
+  };
+
+  await sweetRepository.update(id, updatedSweet);
+  return updatedSweet;
 }
 
 module.exports = {
