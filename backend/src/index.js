@@ -12,6 +12,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
+      "https://kata-sweet-shop-khaki.vercel.app",
     ],
     credentials: true,
   })
