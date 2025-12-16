@@ -1,26 +1,30 @@
 const express = require("express");
 const router = express.Router();
 const { SweetController } = require("../../controllers");
+const { authenticate, isAdmin } = require("../../middlewares");
 
-// Get all sweets
-router.get("/", SweetController.listSweets);
+// Public routes (no authentication required - if you want them public)
+// OR protect all routes - let's protect all as per requirements
 
-// Search sweets with filters
-router.get("/search", SweetController.searchSweets);
+// Get all sweets (Protected - requires authentication)
+router.get("/", authenticate, SweetController.listSweets);
 
-// Add a new sweet
-router.post("/", SweetController.addSweet);
+// Search sweets with filters (Protected - requires authentication)
+router.get("/search", authenticate, SweetController.searchSweets);
 
-// Update sweet details
-router.put("/:id", SweetController.updateSweet);
+// Add a new sweet (Protected - requires authentication)
+router.post("/", authenticate, SweetController.addSweet);
 
-// Delete a sweet
-router.delete("/:id", SweetController.deleteSweet);
+// Update sweet details (Protected - requires authentication)
+router.put("/:id", authenticate, SweetController.updateSweet);
 
-// Restock a sweet
-router.post("/:id/restock", SweetController.restockSweet);
+// Delete a sweet (Protected - Admin only)
+router.delete("/:id", authenticate, isAdmin, SweetController.deleteSweet);
 
-// Purchase a sweet
-router.post("/:id/purchase", SweetController.purchaseSweet);
+// Restock a sweet (Protected - Admin only)
+router.post("/:id/restock", authenticate, isAdmin, SweetController.restockSweet);
+
+// Purchase a sweet (Protected - requires authentication)
+router.post("/:id/purchase", authenticate, SweetController.purchaseSweet);
 
 module.exports = router;

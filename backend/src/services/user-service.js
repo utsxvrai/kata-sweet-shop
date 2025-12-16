@@ -7,11 +7,11 @@ const bcrypt = require("bcrypt");
 
 
 
-async function register(data){
+async function register(data) {
     const userRepository = new UserRepository();
-    try{
+    try {
         const user = await userRepository.findByEmail(data.email);
-        if(user){
+        if (user) {
             throw new Error("User already exists");
         }
 
@@ -19,27 +19,27 @@ async function register(data){
         data.password = hashedPassword;
         const newUser = await userRepository.create(data);
         return newUser;
-    }catch(error){
+    } catch (error) {
         throw error;
     }
 }
 
-async function signin(data){
+async function signin(data) {
     const userRepository = new UserRepository();
-    try{
+    try {
         const user = await userRepository.findByEmail(data.email);
-        if(!user){
+        if (!user) {
             throw new Error("User not found");
         }
         const isPasswordValid = await bcrypt.compare(data.password, user.password);
-        if(!isPasswordValid){
+        if (!isPasswordValid) {
             throw new Error("Invalid password");
         }
-        const token = jwt.sign({id : user.id}, process.env.JWT_SECRET, {expiresIn : "1h"});
-        return {user, token};
-    }catch(error){
+        const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
+        return { user, token };
+    } catch (error) {
         throw error;
-    }   
+    }
 }
 
 module.exports = {
