@@ -2,13 +2,8 @@ const dotenv = require("dotenv");
 dotenv.config();
 const jwt = require("jsonwebtoken");
 
-/**
- * Middleware to verify JWT token and authenticate users
- * Adds user information to req.user if token is valid
- */
 async function authenticate(req, res, next) {
     try {
-        // Get token from Authorization header
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -18,7 +13,6 @@ async function authenticate(req, res, next) {
             });
         }
 
-        // Extract token (remove 'Bearer ' prefix)
         const token = authHeader.substring(7);
 
         if (!token) {
@@ -28,10 +22,8 @@ async function authenticate(req, res, next) {
             });
         }
 
-        // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Add user info to request object
         req.user = decoded;
 
         next();

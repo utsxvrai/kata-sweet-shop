@@ -1,12 +1,7 @@
 const { UserRepository } = require("../repositories");
 
-/**
- * Middleware to check if authenticated user has ADMIN role
- * Must be used AFTER authenticate middleware
- */
 async function isAdmin(req, res, next) {
     try {
-        // Check if user is authenticated (should be set by auth middleware)
         if (!req.user || !req.user.id) {
             return res.status(401).json({
                 success: false,
@@ -14,7 +9,6 @@ async function isAdmin(req, res, next) {
             });
         }
 
-        // Fetch user from database to check role
         const userRepository = new UserRepository();
         const user = await userRepository.findById(req.user.id);
 
@@ -25,7 +19,6 @@ async function isAdmin(req, res, next) {
             });
         }
 
-        // Check if user has ADMIN role
         if (user.role !== 'ADMIN') {
             return res.status(403).json({
                 success: false,
@@ -33,7 +26,6 @@ async function isAdmin(req, res, next) {
             });
         }
 
-        // Add full user object to request for later use
         req.adminUser = user;
 
         next();
